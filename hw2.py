@@ -1,5 +1,5 @@
 import string
-from flask import Flask, send_from_directory, render_template, request, redirect, url_for, flash,session
+from flask import Flask, send_from_directory, render_template, request, redirect, url_for, flash, session
 from flask_httpauth import HTTPBasicAuth
 from pymongo import MongoClient
 
@@ -27,7 +27,7 @@ def create_user(username: string, password: string):
         }
     )
 
-@app.route('/',methods=["GET"])
+@app.route('/', methods=["GET"])
 def index():    return render_template("index.html")
 
 @app.route('/auth', methods=["GET", "POST"])
@@ -37,9 +37,9 @@ def auth():
     elif request.method == "POST":
         username = request.form.get("username")
         password = request.form.get('password')
-        user=verify_password(username, password)
+        user = verify_password(username, password)
         if user != False:
-            session['username'] =user.get('username')
+            session['username'] = user.get('username')
             return redirect(url_for('profile'))
         else:
             flash('Wrong credentials')
@@ -49,23 +49,22 @@ def auth():
 def profile():
     if session['username']:
         username = session['username']
-        return render_template("cabinet.html",username=username)
+        return render_template("cabinet.html", username=username)
     else:
         return redirect(url_for('auth'))
 
-
-@app.route('/signup',methods=["POST","GET"])
+@app.route('/signup', methods=["POST", "GET"])
 def signup():
     if request.method == "GET":
-       return render_template("/signup.html")
+        return render_template("/signup.html")
     elif request.method == "POST":
-        username=request.form.get("username")
-        password=request.form.get('password')
-        if verify_password(username, password)!=False:
+        username = request.form.get("username")
+        password = request.form.get('password')
+        if verify_password(username, password) != False:
             flash('This user already exist')
             return redirect(url_for('auth'))
         else:
-            create_user(username,password)
+            create_user(username, password)
             return redirect(url_for('auth'))
 
 @app.route("/logout", methods=["GET"])
